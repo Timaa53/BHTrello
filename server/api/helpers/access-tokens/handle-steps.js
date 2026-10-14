@@ -45,51 +45,23 @@ module.exports = {
   async fn(inputs) {
     const internalConfig = await InternalConfig.qm.getOneMain();
 
+    // Terms acceptance is recorded automatically instead of blocking login behind a
+    // confirmation modal.
+    if (!sails.hooks.terms.isSignatureValid(inputs.user.termsSignature)) {
+      ({ user: inputs.user } = await User.qm.updateOne(inputs.user.id, {
+        termsSignature: sails.hooks.terms.getSignature(),
+        termsAcceptedAt: new Date().toISOString(),
+      }));
+    }
+
     if (!internalConfig.isInitialized) {
       if (inputs.user.role === User.Roles.ADMIN) {
-        if (inputs.user.termsSignature) {
-          await InternalConfig.qm.updateOneMain({
-            isInitialized: true,
-          });
-        }
+        await InternalConfig.qm.updateOneMain({
+          isInitialized: true,
+        });
       } else {
         throw Errors.ADMIN_LOGIN_REQUIRED_TO_INITIALIZE_INSTANCE;
       }
-    }
-
-    if (!sails.hooks.terms.isSignatureValid(inputs.user.termsSignature)) {
-      const { token: pendingToken, payload: pendingTokenPayload } =
-        sails.helpers.utils.createJwtToken(
-          AccessTokenSteps.ACCEPT_TERMS,
-          undefined,
-          PENDING_TOKEN_EXPIRES_IN,
-        );
-
-      const session = await sails.helpers.sessions.createOne.with({
-        values: {
-          pendingToken,
-          userId: inputs.user.id,
-          remoteAddress: inputs.remoteAddress,
-          userAgent: inputs.request.headers['user-agent'],
-        },
-        withHttpOnlyToken: inputs.withHttpOnlyToken,
-      });
-
-      if (session.httpOnlyToken && !inputs.request.isSocket) {
-        sails.helpers.utils.setHttpOnlyTokenCookie(
-          session.httpOnlyToken,
-          pendingTokenPayload,
-          inputs.response,
-        );
-      }
-
-      throw {
-        termsAcceptanceRequired: {
-          pendingToken,
-          message: 'Terms acceptance required',
-          step: AccessTokenSteps.ACCEPT_TERMS,
-        },
-      };
     }
 
     if (inputs.user.isTotpEnabled) {

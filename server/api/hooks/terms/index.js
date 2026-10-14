@@ -91,6 +91,10 @@ module.exports = function defineTermsHook(sails) {
       return languages;
     },
 
+    getSignature() {
+      return signature;
+    },
+
     isSignatureValid(value) {
       return value === signature;
     },

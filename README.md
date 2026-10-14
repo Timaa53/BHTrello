@@ -2,7 +2,7 @@
 
   ![Logo](https://raw.githubusercontent.com/plankanban/planka/master/assets/logo.png)
 
-  # PLANKA
+  # Brotherhood Trello
 
   _Project mastering driven by fun_
 
@@ -75,7 +75,7 @@ and lists the releases the promote accepts.
 
 ## How to Deploy
 
-PLANKA is easy to install using multiple methods - learn more in the [installation guide](https://docs.planka.cloud/docs/welcome/).
+Brotherhood Trello (based on PLANKA) is easy to install using multiple methods - learn more in the [installation guide](https://docs.planka.cloud/docs/welcome/).
 
 For configuration and environment settings, see the [configuration section](https://docs.planka.cloud/docs/category/configuration/).
 
