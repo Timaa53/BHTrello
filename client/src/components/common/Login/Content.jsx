@@ -183,7 +183,12 @@ const Content = React.memo(() => {
   return (
     <div className={classNames(styles.wrapper, styles.fullHeight)}>
       <Grid verticalAlign="middle" className={styles.grid}>
-        <Grid.Column computer={6} tablet={16} mobile={16} className={styles.gridItem}>
+        <Grid.Column
+          computer={6}
+          tablet={16}
+          mobile={16}
+          className={classNames(styles.gridItem, styles.formColumn)}
+        >
           <div className={styles.login}>
             <div className={styles.form}>
               <div className={styles.logoWrapper}>
