@@ -97,10 +97,15 @@ module.exports = {
     let { boardMembership } = pathToProject;
     const { board, project } = pathToProject;
 
-    const isProjectManager = await sails.helpers.users.isProjectManager(currentUser.id, project.id);
+    if (currentUser.role !== User.Roles.ADMIN) {
+      const isProjectManager = await sails.helpers.users.isProjectManager(
+        currentUser.id,
+        project.id,
+      );
 
-    if (!isProjectManager) {
-      throw Errors.BOARD_MEMBERSHIP_NOT_FOUND; // Forbidden
+      if (!isProjectManager) {
+        throw Errors.BOARD_MEMBERSHIP_NOT_FOUND; // Forbidden
+      }
     }
 
     const values = _.pick(inputs, ['role', 'canComment']);

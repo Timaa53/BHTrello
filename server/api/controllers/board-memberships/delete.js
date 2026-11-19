@@ -72,7 +72,7 @@ module.exports = {
     let { boardMembership } = pathToProject;
     const { board, project } = pathToProject;
 
-    if (boardMembership.userId !== currentUser.id) {
+    if (boardMembership.userId !== currentUser.id && currentUser.role !== User.Roles.ADMIN) {
       const isProjectManager = await sails.helpers.users.isProjectManager(
         currentUser.id,
         project.id,

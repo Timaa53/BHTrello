@@ -12,6 +12,7 @@ import { Popup } from '../../../lib/custom-ui';
 
 import selectors from '../../../selectors';
 import entryActions from '../../../entry-actions';
+import { UserRoles } from '../../../constants/Enums';
 import { useSteps } from '../../../hooks';
 import SelectPermissionsStep from './SelectPermissionsStep';
 import ConfirmationStep from '../../common/ConfirmationStep';
@@ -38,7 +39,15 @@ const ActionsStep = React.memo(({ boardMembershipId, title, onBack, onClose }) =
     (state) => boardMembership.userId === selectors.selectCurrentUserId(state),
   );
 
-  const canEdit = useSelector(selectors.selectIsCurrentUserManagerForCurrentProject);
+  const canEdit = useSelector((state) => {
+    const currentUser = selectors.selectCurrentUser(state);
+
+    if (currentUser.role === UserRoles.ADMIN) {
+      return true;
+    }
+
+    return selectors.selectIsCurrentUserManagerForCurrentProject(state);
+  });
 
   const dispatch = useDispatch();
   const [t] = useTranslation();

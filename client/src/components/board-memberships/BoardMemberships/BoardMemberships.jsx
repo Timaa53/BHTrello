@@ -14,7 +14,7 @@ import { usePopup } from '../../../lib/popup';
 
 import selectors from '../../../selectors';
 import { isUserAdminOrProjectOwner } from '../../../utils/record-helpers';
-import { BoardMembershipRoles } from '../../../constants/Enums';
+import { BoardMembershipRoles, UserRoles } from '../../../constants/Enums';
 import Group from './Group';
 import AddStep from './AddStep';
 
@@ -26,6 +26,10 @@ const BoardMemberships = React.memo(() => {
 
   const canAdd = useSelector((state) => {
     const user = selectors.selectCurrentUser(state);
+
+    if (user.role === UserRoles.ADMIN) {
+      return true;
+    }
 
     if (!isUserAdminOrProjectOwner(user)) {
       return !selectors.selectCurrentUserMembershipForCurrentBoard(state);
